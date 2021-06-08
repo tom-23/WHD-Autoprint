@@ -1,0 +1,17 @@
+{
+    "webPort": 8080,
+    "helpdesk": {
+        "host": "helpdesk.albioncomputers.net",
+        "username": "istore_ipswich@albion.co.uk",
+        "password": "69RGXQ7",
+        "checkingInterval": 30,
+        "searchStatusName": "Awaiting Workshop Diagnosis",
+        "openingHour": 9,
+        "closingHour": 21
+    },
+    "dymo": {
+        "hostname": "192.168.1.1",
+        "port": 41951,
+        "printerName": ""
+    }
+}
