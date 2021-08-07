@@ -43,10 +43,10 @@ function loadRecpiptFooter() {
 }
 async function printRecipt (ticketID, subject, detail, date) {
     let printer = new ThermalPrinter({
-      type: Types.EPSON,  // 'star' or 'epson'
+      type: Types.STAR,  // 'star' or 'epson'
       interface: "tcp://10.10.106.104",
       options: {
-        timeout: 10000
+        timeout: 20000
       },
       width: 48,                         // Number of characters in one line - default: 48
       characterSet: 'SLOVENIA',          // Character set - default: SLOVENIA
@@ -105,6 +105,8 @@ async function printRecipt (ticketID, subject, detail, date) {
       console.log("Print success.");
     } catch (error) {
       console.error("Print error:", error);
+      console.error("Trying again...");
+      printRecipt(ticketID, subject, detail, date);
     }
   
     
@@ -234,3 +236,5 @@ function retriveTicketAndPrint(ticketID) {
 }
 
 loadRecpiptFooter();
+
+printRecipt(123456, "Hello", "test", Date.now())
