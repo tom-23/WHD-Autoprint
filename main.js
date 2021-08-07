@@ -227,7 +227,7 @@ function retriveTicketAndPrint(ticketID) {
         .then(json => {
             
             const subject = json.subject;
-            const detail = json.detail.replaceAll("<br/> ", "\n\n");
+            const detail = json.detail.replaceAll("<br/> ", "\n");
             const date = new Date(json.reportDateUtc);
 
             printLabel(ticketID, subject);
