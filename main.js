@@ -236,5 +236,3 @@ function retriveTicketAndPrint(ticketID) {
 }
 
 loadRecpiptFooter();
-
-printRecipt(123456, "Hello", "test", Date.now())
