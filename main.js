@@ -14,6 +14,8 @@ const dymo = new Dymo();
 
 var lastServerCheck = "n/a";
 var lastLabelPrint = "n/a";
+var lastSubject = "n/a";
+var lastDetails = "n/a";
 
 var checkingInterval = 30;
 
@@ -23,7 +25,17 @@ app.set('view engine', 'ejs')
 app.use(express.static('public'))
 
 app.get('/', (req, res) => {
-    res.render('index', { lastServerCheck, lastLabelPrint});
+    res.render('index', { lastServerCheck, lastLabelPrint, lastSubject, lastDetails});
+})
+
+app.get('/print/lastLabel', (req, res) => {
+    printLabel(lastLabelPrint, "n/a");
+    res.redirect("/");
+})
+
+app.get('/print/lastRecipt', (req, res) => {
+    printRecipt(lastLabelPrint, lastSubject, lastDetails, new Date());
+    res.redirect("/");
 })
 
 app.listen(port, '0.0.0.0', () => {
@@ -228,6 +240,10 @@ function retriveTicketAndPrint(ticketID) {
             const subject = json.subject;
             const detail = json.detail.replaceAll("<br/> ", "\n");
             const date = new Date(json.reportDateUtc);
+
+            lastSubject = subject;
+
+            lastDetails = detail;
 
             printLabel(ticketID, subject);
             printRecipt(ticketID, subject, detail, date)
