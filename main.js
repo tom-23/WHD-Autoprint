@@ -234,4 +234,3 @@ function retriveTicketAndPrint(ticketID) {
 }
 
 loadRecpiptFooter();
-retriveTicketAndPrint(205551);
