@@ -3,6 +3,8 @@ const fs = require('fs')
 const config = require('./config.json')
 const fetch = require('node-fetch')
 const NodeCache = require("node-cache");
+const ThermalPrinter = require("node-thermal-printer").printer;
+const Types = require("node-thermal-printer").types;
 const Dymo = require('dymojs')
 const app = express()
 const port = config.webPort
@@ -14,6 +16,8 @@ var lastServerCheck = "n/a";
 var lastLabelPrint = "n/a";
 
 var checkingInterval = 30;
+
+var reciptFooter;
 
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
@@ -27,6 +31,85 @@ app.listen(port, '0.0.0.0', () => {
     checkServer();
     setInterval(checkServer,  checkingInterval * 1000)
 })
+
+
+function loadRecpiptFooter() {
+    try {  
+        var data = fs.readFileSync('recipt_footer.txt', 'utf8');
+        reciptFooter = data.toString();    
+    } catch(e) {
+        console.log('Error:', e.stack);
+    }
+}
+async function printRecipt (ticketID, subject, detail, date) {
+    let printer = new ThermalPrinter({
+      type: Types.EPSON,  // 'star' or 'epson'
+      interface: "tcp://10.10.106.104",
+      options: {
+        timeout: 10000
+      },
+      width: 48,                         // Number of characters in one line - default: 48
+      characterSet: 'SLOVENIA',          // Character set - default: SLOVENIA
+      removeSpecialCharacters: false,    // Removes special characters - default: false
+      lineCharacter: "-",                // Use custom character for drawing lines - default: -
+    });
+  
+    let isConnected = await printer.isPrinterConnected();
+    console.log("Printer connected:", isConnected);
+  
+    printer.newLine();
+    printer.newLine();
+    printer.newLine();
+    printer.println("iStore Ipswich");
+    printer.newLine();
+    printer.append(Buffer.from([0x1b, 0x34]));
+    printer.append(Buffer.from([0x1b, 0x45]));
+    printer.append(Buffer.from([0x1b, 0x69, 0x01, 0x01]));
+    printer.append(Buffer.from([0x1b, 0x1d, 0x61, 0x01]));
+    printer.println(String(ticketID));
+    printer.newLine();
+    printer.append(Buffer.from([0x1b, 0x69, 0x00, 0x00]));
+    printer.append(Buffer.from([0x1b, 0x35]));
+    printer.append(Buffer.from([0x1b, 0x45]));
+    printer.println(subject);
+  
+    printer.newLine();
+    printer.newLine();
+  
+    
+    printer.append(Buffer.from([0x1b, 0x1d, 0x61, 0x00]));
+  
+    printer.drawLine();
+    printer.print(detail);
+    printer.newLine();
+    printer.drawLine();
+
+    printer.newLine();
+    printer.newLine();
+
+    printer.println(date.toString());
+
+  
+    printer.newLine();
+    printer.newLine();
+
+    printer.print(reciptFooter);
+
+    printer.newLine();
+    printer.newLine();
+  
+    printer.append(Buffer.from([0x1b, 0x64, 0x02]));
+  
+    try {
+      await printer.execute();
+      console.log("Print success.");
+    } catch (error) {
+      console.error("Print error:", error);
+    }
+  
+    
+  }
+  
 
 function printLabel(ticketID, ticketSSubject) {
     var labelData = "";
@@ -44,6 +127,8 @@ function printLabel(ticketID, ticketSSubject) {
     })
 
 }
+
+
 
 function checkServer() {
     
@@ -113,8 +198,7 @@ function checkServer() {
                             console.log("Ticket cached!");
                             console.log("\n");
                         }
-                        console.log("Printing...");
-                        printLabel(ticketID, ticketSSubject);
+                        retriveTicketAndPrint(ticketID);
                     }
                 }
             }
@@ -123,3 +207,31 @@ function checkServer() {
             lastServerCheck = date.toUTCString();
         });
 }
+
+function retriveTicketAndPrint(ticketID) {
+    console.log("Retrieving ticket information...");
+
+    var params = {
+        username: config.helpdesk.username,
+        password: config.helpdesk.password
+    }
+
+    var url = new URL("http://" + config.helpdesk.host + "/helpdesk/WebObjects/Helpdesk.woa/ra/Tickets/" + ticketID);
+
+    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+
+    fetch(url, { method: 'GET' })
+        .then(res => res.json())
+        .then(json => {
+            
+            const subject = json.subject;
+            const detail = json.detail.replaceAll("<br/> ", "\n\n");
+            const date = new Date(json.reportDateUtc);
+
+            printLabel(ticketID, subject);
+            printRecipt(ticketID, subject, detail, date)
+        });
+}
+
+loadRecpiptFooter();
+retriveTicketAndPrint(205551);
