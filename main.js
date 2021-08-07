@@ -93,8 +93,9 @@ async function printRecipt (ticketID, subject, detail, date) {
     printer.newLine();
     printer.newLine();
 
-    printer.print(reciptFooter);
-
+    printer.alignCenter();
+    await printer.printImage("istore.png");
+    
     printer.newLine();
     printer.newLine();
   
