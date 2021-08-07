@@ -60,8 +60,6 @@ async function printRecipt (ticketID, subject, detail, date) {
     printer.newLine();
     printer.newLine();
     printer.newLine();
-    printer.println("iStore Ipswich");
-    printer.newLine();
     printer.append(Buffer.from([0x1b, 0x34]));
     printer.append(Buffer.from([0x1b, 0x45]));
     printer.append(Buffer.from([0x1b, 0x69, 0x01, 0x01]));
@@ -72,17 +70,17 @@ async function printRecipt (ticketID, subject, detail, date) {
     printer.append(Buffer.from([0x1b, 0x35]));
     printer.append(Buffer.from([0x1b, 0x45]));
     printer.println(subject);
-  
+
+    Buffer.from([0x1b, 0x46])
+
     printer.newLine();
     printer.newLine();
   
     
     printer.append(Buffer.from([0x1b, 0x1d, 0x61, 0x00]));
-  
-    printer.drawLine();
+
     printer.print(detail);
     printer.newLine();
-    printer.drawLine();
 
     printer.newLine();
     printer.newLine();
@@ -237,3 +235,4 @@ function retriveTicketAndPrint(ticketID) {
 }
 
 loadRecpiptFooter();
+printRecipt(696969, "SUBJECT", "NO DETAILS", Date.now());
