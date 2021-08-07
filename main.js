@@ -235,4 +235,3 @@ function retriveTicketAndPrint(ticketID) {
 }
 
 loadRecpiptFooter();
-printRecipt(696969, "SUBJECT", "NO DETAILS", Date.now());
