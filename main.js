@@ -14,8 +14,9 @@ const dymo = new Dymo();
 
 var lastServerCheck = "n/a";
 var lastLabelPrint = "n/a";
-var lastSubject = "n/a";
-var lastDetails = "n/a";
+var lastTicketNumber = 999999;
+var lastSubject = "AutoPrint";
+var lastDetails = "No tickets have been submitted :(";
 
 var checkingInterval = 30;
 
@@ -25,7 +26,7 @@ app.set('view engine', 'ejs')
 app.use(express.static('public'))
 
 app.get('/', (req, res) => {
-    res.render('index', { lastServerCheck, lastLabelPrint, lastSubject, lastDetails});
+    res.render('index', { lastServerCheck, lastLabelPrint, lastSubject});
 })
 
 app.get('/print/lastLabel', (req, res) => {
@@ -34,7 +35,7 @@ app.get('/print/lastLabel', (req, res) => {
 })
 
 app.get('/print/lastRecipt', (req, res) => {
-    printRecipt(lastLabelPrint, lastSubject, lastDetails, new Date());
+    printRecipt(lastTicketNumber, lastSubject, lastDetails, new Date());
     res.redirect("/");
 })
 
@@ -244,6 +245,7 @@ function retriveTicketAndPrint(ticketID) {
             lastSubject = subject;
 
             lastDetails = detail;
+            lastTicketNumber = ticketID;
 
             printLabel(ticketID, subject);
             printRecipt(ticketID, subject, detail, date)
