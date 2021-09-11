@@ -16,6 +16,7 @@ var lastServerCheck = "n/a";
 var lastLabelPrint = "n/a";
 var lastTicketNumber = 999999;
 var lastSubject = "AutoPrint";
+var lastSerialNumber = "XXXXXXXXXXXX";
 var lastDetails = "No tickets have been submitted :(";
 
 var checkingInterval = 30;
@@ -30,7 +31,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/print/lastLabel', (req, res) => {
-    printLabel(lastLabelPrint, "n/a");
+    printLabel(lastLabelPrint, lastSerialNumber);
     res.redirect("/");
 })
 
@@ -125,11 +126,18 @@ async function printRecipt (ticketID, subject, detail, date) {
   }
   
 
-function printLabel(ticketID, ticketSSubject) {
+function printLabel(ticketID, serialNumber) {
     var labelData = "";
-    fs.readFile("./label_template.label", 'utf8', function(err, data) {
+    var fileName;
+    if (serialNumber != "") {
+        fileName = "./label_template_with_serialnumber.label";
+    } else {
+        fileName = "./label_template_without_serialnumber.label";
+    }
+    fs.readFile(fileName, 'utf8', function(err, data) {
         if (err) throw err;
         labelData = data.replace("TICKETNO", ticketID);
+        labelData = data.replace("SERIALNO", serialNumber);
         dymo.renderLabel(labelData).then(imageData => {
             fs.writeFile("./public/last_label.png", imageData, 'base64', function(err) {
             });
@@ -193,6 +201,12 @@ function checkServer() {
                         console.log("Ticket cached!\n");
                     }
                 }
+                if (json.length == 0) {
+                    console.log("Looks like helpdesk doesn't have any tickets to add. Since this is the case, TicketID 123456 will be used for cacheing purposes.")
+                    if (ticketCache.set(123456, "TEMPTICKET")) {
+                        console.log("Ticket cached!\n");
+                    }
+                }
             } else {
                 for (var i = 0; i < json.length; i++) {
                     const ticketID = json[i].id;
@@ -242,12 +256,20 @@ function retriveTicketAndPrint(ticketID) {
             const detail = json.detail.replaceAll("<br/> ", "\n");
             const date = new Date(json.reportDateUtc);
 
-            lastSubject = subject;
+            var serialNumber = subject;
 
+            serialNumber = serialNumber.substr(0, 12);
+
+            if (serialNumber.match("^[A-Za-z0-9]+$") == null) {
+                serialNumber = "";
+            }
+
+            lastSubject = subject;
+            lastSerialNumber = serialNumber;
             lastDetails = detail;
             lastTicketNumber = ticketID;
 
-            printLabel(ticketID, subject);
+            printLabel(ticketID, serialNumber);
             printRecipt(ticketID, subject, detail, date)
         });
 }
