@@ -40,6 +40,11 @@ app.get('/print/lastRecipt', (req, res) => {
     res.redirect("/");
 })
 
+app.get('/print/ticket/:ticketId', (req, res) => {
+    retriveTicketAndPrint(req.params.ticketId, false);
+    res.redirect("/");
+})
+
 app.listen(port, '0.0.0.0', () => {
     console.log(`WHD-Autoprint app listening on port ${port}`)
     checkServer();
@@ -136,8 +141,7 @@ function printLabel(ticketID, serialNumber) {
     }
     fs.readFile(fileName, 'utf8', function(err, data) {
         if (err) throw err;
-        labelData = data.replace("TICKETNO", ticketID);
-        labelData = data.replace("SERIALNO", serialNumber);
+        labelData = data.replace("TICKETNO", ticketID).replace("SERIALNO", serialNumber);
         dymo.renderLabel(labelData).then(imageData => {
             fs.writeFile("./public/last_label.png", imageData, 'base64', function(err) {
             });
@@ -226,7 +230,7 @@ function checkServer() {
                             console.log("Ticket cached!");
                             console.log("\n");
                         }
-                        retriveTicketAndPrint(ticketID);
+                        retriveTicketAndPrint(ticketID, true);
                     }
                 }
             }
@@ -236,7 +240,7 @@ function checkServer() {
         });
 }
 
-function retriveTicketAndPrint(ticketID) {
+function retriveTicketAndPrint(ticketID, printRecipt) {
     console.log("Retrieving ticket information...");
 
     var params = {
@@ -270,7 +274,9 @@ function retriveTicketAndPrint(ticketID) {
             lastTicketNumber = ticketID;
 
             printLabel(ticketID, serialNumber);
-            printRecipt(ticketID, subject, detail, date)
+            if (printRecipt) {
+                printRecipt(ticketID, subject, detail, date)
+            }
         });
 }
 
