@@ -60,7 +60,7 @@ function loadRecpiptFooter() {
         console.log('Error:', e.stack);
     }
 }
-async function printRecipt (ticketID, subject, detail, date) {
+async function printRecipt(ticketID, subject, detail, date) {
     let printer = new ThermalPrinter({
       type: Types.STAR,  // 'star' or 'epson'
       interface: "tcp://10.10.106.104",
@@ -240,7 +240,7 @@ function checkServer() {
         });
 }
 
-function retriveTicketAndPrint(ticketID, printRecipt) {
+function retriveTicketAndPrint(ticketID, shouldPrintRecipt) {
     console.log("Retrieving ticket information...");
 
     var params = {
@@ -274,7 +274,7 @@ function retriveTicketAndPrint(ticketID, printRecipt) {
             lastTicketNumber = ticketID;
 
             printLabel(ticketID, serialNumber);
-            if (printRecipt) {
+            if (shouldPrintRecipt) {
                 printRecipt(ticketID, subject, detail, date)
             }
         });
