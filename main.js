@@ -158,7 +158,22 @@ function printLabel(ticketID, serialNumber, openDate) {
 
 }
 
+function printDOAWarning() {
+    var fileName = "./label_doa_warning.label";
+    fs.readFile(fileName, 'utf8', function(err, data) {
+        if (err) throw err;
+        labelData = data;
+        dymo.renderLabel(labelData).then(imageData => {
+            fs.writeFile("./public/last_label.png", imageData, 'base64', function(err) {
+            });
+        });
+        dymo.print('DYMO LabelWriter 450', labelData);
+        let date= new Date();
+        lastLabelPrint = date.toUTCString();
+        console.log("DOA Warning label printed!\n")
+    })
 
+}
 
 function checkServer() {
     
@@ -282,6 +297,10 @@ function retriveTicketAndPrint(ticketID, shouldPrintRecipt) {
                 shouldPrintRecipt = false;
             } else {
                 printLabel(ticketID, serialNumber, "");
+            }
+
+            if (!subject.startsWith("DOA") && subject.includes("DOA")) {
+                printDOAWarning();
             }
 
             if (shouldPrintRecipt) {
