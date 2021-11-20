@@ -17,6 +17,7 @@ var lastLabelPrint = "n/a";
 var lastTicketNumber = 999999;
 var lastSubject = "AutoPrint";
 var lastSerialNumber = "XXXXXXXXXXXX";
+var lastOpenDate = "XX/XX/XX XX:XX";
 var lastDetails = "No tickets have been submitted :(";
 
 var checkingInterval = 30;
@@ -31,7 +32,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/print/lastLabel', (req, res) => {
-    printLabel(lastLabelPrint, lastSerialNumber);
+    printLabel(lastLabelPrint, lastSerialNumber, lastOpenDate);
     res.redirect("/");
 })
 
@@ -131,17 +132,19 @@ async function printRecipt(ticketID, subject, detail, date) {
   }
   
 
-function printLabel(ticketID, serialNumber) {
+function printLabel(ticketID, serialNumber, openDate) {
     var labelData = "";
     var fileName;
     if (serialNumber != "") {
         fileName = "./label_template_with_serialnumber.label";
+    } else if (serialNumber.startsWith("DOA")) {
+        fileName = "./label_template_doa.label";
     } else {
         fileName = "./label_template_without_serialnumber.label";
     }
     fs.readFile(fileName, 'utf8', function(err, data) {
         if (err) throw err;
-        labelData = data.replace("TICKETNO", ticketID).replace("SERIALNO", serialNumber);
+        labelData = data.replace("TICKETNO", ticketID).replace("SERIALNO", serialNumber).replace("OPENDATE");
         dymo.renderLabel(labelData).then(imageData => {
             fs.writeFile("./public/last_label.png", imageData, 'base64', function(err) {
             });
@@ -273,7 +276,13 @@ function retriveTicketAndPrint(ticketID, shouldPrintRecipt) {
             lastDetails = detail;
             lastTicketNumber = ticketID;
 
-            printLabel(ticketID, serialNumber);
+            if (subject.startsWith("DOA")) {
+                printLabel(ticketID, subject, date.toLocaleDateString("en-UK"));
+                shouldPrintRecipt = false;
+            } else {
+                printLabel(ticketID, serialNumber, "");
+            }
+
             if (shouldPrintRecipt) {
                 printRecipt(ticketID, subject, detail, date)
             }
