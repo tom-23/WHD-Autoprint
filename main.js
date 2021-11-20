@@ -137,14 +137,14 @@ function printLabel(ticketID, serialNumber, openDate) {
     var fileName;
     if (serialNumber != "") {
         fileName = "./label_template_with_serialnumber.label";
-    } else if (serialNumber.startsWith("DOA")) {
+    } else if (openDate != "") {
         fileName = "./label_template_doa.label";
     } else {
         fileName = "./label_template_without_serialnumber.label";
     }
     fs.readFile(fileName, 'utf8', function(err, data) {
         if (err) throw err;
-        labelData = data.replace("TICKETNO", ticketID).replace("SERIALNO", serialNumber).replace("OPENDATE");
+        labelData = data.replace("TICKETNO", ticketID).replace("SERIALNO", serialNumber).replace("OPENDATE", openDate);
         dymo.renderLabel(labelData).then(imageData => {
             fs.writeFile("./public/last_label.png", imageData, 'base64', function(err) {
             });
