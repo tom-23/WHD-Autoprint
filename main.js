@@ -61,6 +61,7 @@ function loadRecpiptFooter() {
         console.log('Error:', e.stack);
     }
 }
+
 async function printRecipt(ticketID, subject, detail, date) {
     let printer = new ThermalPrinter({
       type: Types.STAR,  // 'star' or 'epson'
@@ -135,10 +136,10 @@ async function printRecipt(ticketID, subject, detail, date) {
 function printLabel(ticketID, serialNumber, openDate) {
     var labelData = "";
     var fileName;
-    if (serialNumber != "") {
-        fileName = "./label_template_with_serialnumber.label";
-    } else if (openDate != "") {
+    if (openDate != "") {
         fileName = "./label_template_doa.label";
+    } else if (serialNumber != "") {
+        fileName = "./label_template_with_serialnumber.label";
     } else {
         fileName = "./label_template_without_serialnumber.label";
     }
