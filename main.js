@@ -43,8 +43,8 @@ app.get('/print/lastRecipt', (req, res) => {
     res.redirect("/");
 })
 
-app.get('/print/ticket/:ticketId', (req, res) => {
-    retriveTicketAndPrint(req.params.ticketId, false);
+app.get('/print/ticket', (req, res) => {
+    retriveTicketAndPrint(req.query.ticketNumber, false);
     res.redirect("/");
 })
 
