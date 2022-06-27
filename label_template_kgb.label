@@ -15,7 +15,7 @@
       <Rotation>Rotation0</Rotation>
       <IsMirrored>False</IsMirrored>
       <IsVariable>False</IsVariable>
-      <HorizontalAlignment>Center</HorizontalAlignment>
+      <HorizontalAlignment>Left</HorizontalAlignment>
       <VerticalAlignment>Middle</VerticalAlignment>
       <TextFitMode>AlwaysFit</TextFitMode>
       <UseFullFontHeight>True</UseFullFontHeight>
@@ -24,17 +24,17 @@
         <Element>
           <String>000-0000</String>
           <Attributes>
-            <Font Family="SF Pro Rounded" Size="9" Bold="True" Italic="False" Underline="False" Strikeout="False"/>
+            <Font Family="SF Compact Rounded" Size="9" Bold="True" Italic="False" Underline="False" Strikeout="False"/>
             <ForeColor Alpha="255" Red="0" Green="0" Blue="0"/>
           </Attributes>
         </Element>
       </StyledText>
     </TextObject>
-    <Bounds X="129.5999" Y="57.59995" Width="1129.691" Height="391.23"/>
+    <Bounds X="129.5999" Y="664.6682" Width="1642.468" Height="391.23"/>
   </ObjectInfo>
   <ObjectInfo>
     <TextObject>
-      <Name>TEXT_1_1</Name>
+      <Name>DEVICENAME</Name>
       <ForeColor Alpha="255" Red="0" Green="0" Blue="0"/>
       <BackColor Alpha="0" Red="255" Green="255" Blue="255"/>
       <LinkedObjectName></LinkedObjectName>
@@ -48,45 +48,19 @@
       <Verticalized>False</Verticalized>
       <StyledText>
         <Element>
-          <String>Device:</String>
-          <Attributes>
-            <Font Family="SF Pro Rounded" Size="10" Bold="False" Italic="False" Underline="False" Strikeout="False"/>
-            <ForeColor Alpha="255" Red="0" Green="0" Blue="0"/>
-          </Attributes>
-        </Element>
-      </StyledText>
-    </TextObject>
-    <Bounds X="129.5999" Y="497.1083" Width="758.3829" Height="228.4711"/>
-  </ObjectInfo>
-  <ObjectInfo>
-    <TextObject>
-      <Name>DEVICENAME</Name>
-      <ForeColor Alpha="255" Red="0" Green="0" Blue="0"/>
-      <BackColor Alpha="0" Red="255" Green="255" Blue="255"/>
-      <LinkedObjectName></LinkedObjectName>
-      <Rotation>Rotation0</Rotation>
-      <IsMirrored>False</IsMirrored>
-      <IsVariable>False</IsVariable>
-      <HorizontalAlignment>Right</HorizontalAlignment>
-      <VerticalAlignment>Middle</VerticalAlignment>
-      <TextFitMode>None</TextFitMode>
-      <UseFullFontHeight>True</UseFullFontHeight>
-      <Verticalized>False</Verticalized>
-      <StyledText>
-        <Element>
           <String>DEVICE_NAME</String>
           <Attributes>
-            <Font Family="SF Pro Rounded" Size="10" Bold="False" Italic="False" Underline="False" Strikeout="False"/>
+            <Font Family="SF Compact" Size="10" Bold="False" Italic="False" Underline="False" Strikeout="False"/>
             <ForeColor Alpha="255" Red="0" Green="0" Blue="0"/>
           </Attributes>
         </Element>
       </StyledText>
     </TextObject>
-    <Bounds X="851.5121" Y="497.6767" Width="2067.81" Height="228.4711"/>
+    <Bounds X="129.5999" Y="528.2199" Width="2846.4" Height="228.4711"/>
   </ObjectInfo>
   <ObjectInfo>
     <TextObject>
-      <Name>PARTDESC</Name>
+      <Name>DEVICENAME_1</Name>
       <ForeColor Alpha="255" Red="0" Green="0" Blue="0"/>
       <BackColor Alpha="0" Red="255" Green="255" Blue="255"/>
       <LinkedObjectName></LinkedObjectName>
@@ -102,34 +76,12 @@
         <Element>
           <String>PART_DESC</String>
           <Attributes>
-            <Font Family="SF Pro Rounded" Size="14" Bold="False" Italic="False" Underline="False" Strikeout="False"/>
+            <Font Family="SF Compact" Size="12" Bold="True" Italic="False" Underline="False" Strikeout="False"/>
             <ForeColor Alpha="255" Red="0" Green="0" Blue="0"/>
           </Attributes>
         </Element>
       </StyledText>
     </TextObject>
-    <Bounds X="129.5999" Y="798.4" Width="2846.4" Height="560"/>
-  </ObjectInfo>
-  <ObjectInfo>
-    <BarcodeObject>
-      <Name>BARCODE</Name>
-      <ForeColor Alpha="255" Red="0" Green="0" Blue="0"/>
-      <BackColor Alpha="255" Red="255" Green="255" Blue="255"/>
-      <LinkedObjectName></LinkedObjectName>
-      <Rotation>Rotation0</Rotation>
-      <IsMirrored>False</IsMirrored>
-      <IsVariable>False</IsVariable>
-      <Text>000-0000</Text>
-      <Type>Code128Auto</Type>
-      <Size>Small</Size>
-      <TextPosition>None</TextPosition>
-      <TextFont Family="Helvetica" Size="10" Bold="False" Italic="False" Underline="False" Strikeout="False"/>
-      <CheckSumFont Family="Helvetica" Size="10" Bold="False" Italic="False" Underline="False" Strikeout="False"/>
-      <TextEmbedding>None</TextEmbedding>
-      <ECLevel>0</ECLevel>
-      <HorizontalAlignment>Center</HorizontalAlignment>
-      <QuietZonesPadding Left="0" Right="0" Top="0" Bottom="0"/>
-    </BarcodeObject>
-    <Bounds X="1344.124" Y="57.59995" Width="1631.876" Height="391.23"/>
+    <Bounds X="129.5999" Y="985.3035" Width="2846.4" Height="373.0965"/>
   </ObjectInfo>
 </DieCutLabel>
