@@ -4,13 +4,13 @@
         "host": "helpdesk.albioncomputers.net",
         "username": "istore_ipswich@albion.co.uk",
         "password": "69RGXQ7",
-        "checkingInterval": 30,
+        "checkingInterval": 15,
         "searchStatusName": "Awaiting Workshop Diagnosis",
-        "openingHour": 9,
+        "openingHour": 8,
         "closingHour": 21
     },
     "dymo": {
-        "hostname": "192.168.1.1",
+        "hostname": "127.0.0.1",
         "port": 41951,
         "printerName": ""
     }
