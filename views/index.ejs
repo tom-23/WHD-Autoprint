@@ -11,7 +11,7 @@
     <title>WHD AutoPrint</title>
 </head>
 
-<body>
+<body onLoad="document.getElementById('partNumber').focus()";>
     <div class="d-flex flex-column p-4">
         <div class="p-2 align-self-center d-flex justify-content-center">
             <div class="bg-dark p-4 rounded">
@@ -24,6 +24,13 @@
 
                 <a type="button" class="btn btn-primary text-dark" href="/print/lastLabel">Print Last Ticket (Label)</a>
                 <a type="button" class="btn btn-primary text-dark" href="/print/lastRecipt">Print Last Ticket (Recipt)</a>
+
+                <br>
+                <br>
+                <form action="/print/part" method="get">
+                    <input type="text" name="partNumber" id="partNumber">
+                    <input type="submit" class="btn btn-primary text-dark" value="Print Part Label">
+                </form>
                 <br>
                 <br>
                 <p class="text-light">Last Label: <img src="last_label.png" alt=""></p>

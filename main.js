@@ -1,4 +1,5 @@
 const express = require('express')
+const csv = require('csv-parser')
 const fs = require('fs')
 const config = require('./config.json')
 const fetch = require('node-fetch')
@@ -10,6 +11,7 @@ const app = express()
 const port = config.webPort
 
 const ticketCache = new NodeCache();
+const partsCache = new NodeCache();
 const dymo = new Dymo();
 
 var lastServerCheck = "n/a";
@@ -43,6 +45,11 @@ app.get('/print/lastRecipt', (req, res) => {
 
 app.get('/print/ticket/:ticketId', (req, res) => {
     retriveTicketAndPrint(req.params.ticketId, false);
+    res.redirect("/");
+})
+
+app.get('/print/part', (req, res) => {
+    printPartLabel(req.query.partNumber)
     res.redirect("/");
 })
 
@@ -156,6 +163,24 @@ function printLabel(ticketID, serialNumber, openDate) {
         console.log("Label printed!\n")
     })
 
+}
+
+function printPartLabel(partNumber) {
+    const partInfo = partsCache.get(partNumber);
+    console.log(partInfo);
+    const fileName = "./label_template_kgb.label";
+    fs.readFile(fileName, 'utf8', function(err, data) {
+        if (err) throw err;
+        labelData = data.replace("000-0000", partInfo['Part Number']).replace("DEVICE_NAME", partInfo['Product Name']).replace("PART_DESC", partInfo['Part Description'].replace(partInfo['Product Name'], "")).replaceAll(",", "");
+        dymo.renderLabel(labelData).then(imageData => {
+            fs.writeFile("./public/last_label.png", imageData, 'base64', function(err) {
+            });
+        });
+        dymo.print('DYMO LabelWriter 450', labelData);
+        let date= new Date();
+        lastLabelPrint = date.toUTCString();
+        console.log("Label printed!\n")
+    })
 }
 
 function printDOAWarning() {
@@ -308,5 +333,20 @@ function retriveTicketAndPrint(ticketID, shouldPrintRecipt) {
             }
         });
 }
+
+function loadPartsCache() {
+    console.log('Loading Parts DB...');
+    fs.createReadStream('iPhone_Parts.csv')
+  .pipe(csv())
+  .on('data', (row) => {
+    console.log("Caching " + row['Part Number']);
+    partsCache.set(row['Part Number'], row);
+  })
+  .on('end', () => {
+    console.log('Parts DB Parsed and Cached!');
+  });
+}
+
+loadPartsCache();
 
 loadRecpiptFooter();
