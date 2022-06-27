@@ -171,7 +171,7 @@ function printPartLabel(partNumber) {
     const fileName = "./label_template_kgb.label";
     fs.readFile(fileName, 'utf8', function(err, data) {
         if (err) throw err;
-        labelData = data.replace("000-0000", partInfo['Part Number']).replace("DEVICE_NAME", partInfo['Product Name']).replace("PART_DESC", partInfo['Part Description'].replace(partInfo['Product Name'], "")).replaceAll(",", "");
+        labelData = data.replace("000-0000", partInfo['Part Number']).replace("DEVICE_NAME", partInfo['Product Name']).replace("PART_DESC", partInfo['Part Description'].replace("iPhone", "")).replaceAll(",", "");
         dymo.renderLabel(labelData).then(imageData => {
             fs.writeFile("./public/last_label.png", imageData, 'base64', function(err) {
             });

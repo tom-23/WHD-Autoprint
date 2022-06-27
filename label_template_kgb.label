@@ -9,8 +9,8 @@
   <ObjectInfo>
     <TextObject>
       <Name>PARTNUMBER</Name>
-      <ForeColor Alpha="255" Red="255" Green="255" Blue="255"/>
-      <BackColor Alpha="255" Red="0" Green="0" Blue="0"/>
+      <ForeColor Alpha="255" Red="0" Green="0" Blue="0"/>
+      <BackColor Alpha="255" Red="255" Green="255" Blue="255"/>
       <LinkedObjectName></LinkedObjectName>
       <Rotation>Rotation0</Rotation>
       <IsMirrored>False</IsMirrored>
@@ -25,7 +25,7 @@
           <String>000-0000</String>
           <Attributes>
             <Font Family="SF Pro Rounded" Size="9" Bold="True" Italic="False" Underline="False" Strikeout="False"/>
-            <ForeColor Alpha="255" Red="255" Green="255" Blue="255"/>
+            <ForeColor Alpha="255" Red="0" Green="0" Blue="0"/>
           </Attributes>
         </Element>
       </StyledText>
@@ -67,7 +67,7 @@
       <Rotation>Rotation0</Rotation>
       <IsMirrored>False</IsMirrored>
       <IsVariable>False</IsVariable>
-      <HorizontalAlignment>Left</HorizontalAlignment>
+      <HorizontalAlignment>Right</HorizontalAlignment>
       <VerticalAlignment>Middle</VerticalAlignment>
       <TextFitMode>None</TextFitMode>
       <UseFullFontHeight>True</UseFullFontHeight>
@@ -94,21 +94,21 @@
       <IsMirrored>False</IsMirrored>
       <IsVariable>False</IsVariable>
       <HorizontalAlignment>Left</HorizontalAlignment>
-      <VerticalAlignment>Middle</VerticalAlignment>
-      <TextFitMode>AlwaysFit</TextFitMode>
+      <VerticalAlignment>Bottom</VerticalAlignment>
+      <TextFitMode>ShrinkToFit</TextFitMode>
       <UseFullFontHeight>True</UseFullFontHeight>
       <Verticalized>False</Verticalized>
       <StyledText>
         <Element>
           <String>PART_DESC</String>
           <Attributes>
-            <Font Family="SF Pro Rounded" Size="10" Bold="False" Italic="False" Underline="False" Strikeout="False"/>
+            <Font Family="SF Pro Rounded" Size="14" Bold="False" Italic="False" Underline="False" Strikeout="False"/>
             <ForeColor Alpha="255" Red="0" Green="0" Blue="0"/>
           </Attributes>
         </Element>
       </StyledText>
     </TextObject>
-    <Bounds X="129.5999" Y="782.1217" Width="2846.4" Height="576.2782"/>
+    <Bounds X="129.5999" Y="798.4" Width="2846.4" Height="560"/>
   </ObjectInfo>
   <ObjectInfo>
     <BarcodeObject>
