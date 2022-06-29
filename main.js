@@ -146,6 +146,7 @@ async function printRecipt(ticketID, subject, detail, date) {
 
 
 function printLabel(ticketID, serialNumber, openDate) {
+    serialNumber = toString(serialNumber).toUpperCase();
     var labelData = "";
     var fileName;
     if (openDate != "") {
@@ -314,6 +315,10 @@ function retriveTicketAndPrint(ticketID, shouldPrintRecipt) {
             serialNumber = serialNumber.substr(0, 12);
 
             if (serialNumber.match("^[A-Za-z0-9]+$") == null) {
+                serialNumber = "";
+            }
+
+            if (serialNumber.length < 12) {
                 serialNumber = "";
             }
 
