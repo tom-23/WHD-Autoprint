@@ -30,7 +30,7 @@ app.set('view engine', 'ejs')
 app.use(express.static('public'))
 
 app.get('/', (req, res) => {
-    res.render('index', { lastServerCheck, lastLabelPrint, lastSubject});
+    res.render('index', { lastServerCheck, lastLabelPrint, lastSubject });
 })
 
 app.get('/print/lastLabel', (req, res) => {
@@ -53,38 +53,43 @@ app.get('/print/part', (req, res) => {
     res.redirect("/");
 })
 
+app.get('/updaterestart', (req, res) => {
+    runUpdateScript();
+    res.redirect("/");
+})
+
 app.listen(port, '0.0.0.0', () => {
     console.log(`WHD-Autoprint app listening on port ${port}`)
     checkServer();
-    setInterval(checkServer,  checkingInterval * 1000)
+    setInterval(checkServer, checkingInterval * 1000)
 })
 
 
 function loadRecpiptFooter() {
-    try {  
+    try {
         var data = fs.readFileSync('recipt_footer.txt', 'utf8');
-        reciptFooter = data.toString();    
-    } catch(e) {
+        reciptFooter = data.toString();
+    } catch (e) {
         console.log('Error:', e.stack);
     }
 }
 
 async function printRecipt(ticketID, subject, detail, date) {
     let printer = new ThermalPrinter({
-      type: Types.STAR,  // 'star' or 'epson'
-      interface: "tcp://10.10.106.104",
-      options: {
-        timeout: 20000
-      },
-      width: 48,                         // Number of characters in one line - default: 48
-      characterSet: 'SLOVENIA',          // Character set - default: SLOVENIA
-      removeSpecialCharacters: false,    // Removes special characters - default: false
-      lineCharacter: "-",                // Use custom character for drawing lines - default: -
+        type: Types.STAR,  // 'star' or 'epson'
+        interface: "tcp://10.10.106.104",
+        options: {
+            timeout: 20000
+        },
+        width: 48,                         // Number of characters in one line - default: 48
+        characterSet: 'SLOVENIA',          // Character set - default: SLOVENIA
+        removeSpecialCharacters: false,    // Removes special characters - default: false
+        lineCharacter: "-",                // Use custom character for drawing lines - default: -
     });
-  
+
     let isConnected = await printer.isPrinterConnected();
     console.log("Printer connected:", isConnected);
-  
+
     printer.newLine();
     printer.newLine();
     printer.newLine();
@@ -103,8 +108,8 @@ async function printRecipt(ticketID, subject, detail, date) {
 
     printer.newLine();
     printer.newLine();
-  
-    
+
+
     printer.append(Buffer.from([0x1b, 0x1d, 0x61, 0x00]));
 
     printer.print(detail);
@@ -115,30 +120,30 @@ async function printRecipt(ticketID, subject, detail, date) {
 
     printer.println(date.toString());
 
-  
+
     printer.newLine();
     printer.newLine();
 
     printer.alignCenter();
     await printer.printImage("istore.png");
-    
+
     printer.newLine();
     printer.newLine();
-  
+
     printer.append(Buffer.from([0x1b, 0x64, 0x02]));
-  
+
     try {
-      await printer.execute();
-      console.log("Print success.");
+        await printer.execute();
+        console.log("Print success.");
     } catch (error) {
-      console.error("Print error:", error);
-      console.error("Trying again...");
-      printRecipt(ticketID, subject, detail, date);
+        console.error("Print error:", error);
+        console.error("Trying again...");
+        printRecipt(ticketID, subject, detail, date);
     }
-  
-    
-  }
-  
+
+
+}
+
 
 function printLabel(ticketID, serialNumber, openDate) {
     var labelData = "";
@@ -150,15 +155,15 @@ function printLabel(ticketID, serialNumber, openDate) {
     } else {
         fileName = "./label_template_without_serialnumber.label";
     }
-    fs.readFile(fileName, 'utf8', function(err, data) {
+    fs.readFile(fileName, 'utf8', function (err, data) {
         if (err) throw err;
         labelData = data.replace("TICKETNO", ticketID).replace("SERIALNO", serialNumber).replace("OPENDATE", openDate);
         dymo.renderLabel(labelData).then(imageData => {
-            fs.writeFile("./public/last_label.png", imageData, 'base64', function(err) {
+            fs.writeFile("./public/last_label.png", imageData, 'base64', function (err) {
             });
         });
         dymo.print('DYMO LabelWriter 450', labelData);
-        let date= new Date();
+        let date = new Date();
         lastLabelPrint = date.toUTCString();
         console.log("Label printed!\n")
     })
@@ -169,15 +174,15 @@ function printPartLabel(partNumber) {
     const partInfo = partsCache.get(partNumber);
     console.log(partInfo);
     const fileName = "./label_template_kgb.label";
-    fs.readFile(fileName, 'utf8', function(err, data) {
+    fs.readFile(fileName, 'utf8', function (err, data) {
         if (err) throw err;
         labelData = data.replace("000-0000", partInfo['Part Number']).replace("DEVICE_NAME", partInfo['Product Name']).replace("PART_DESC", partInfo['Part Description'].replace(partInfo['Product Name'], "")).replaceAll(",", "");
         dymo.renderLabel(labelData).then(imageData => {
-            fs.writeFile("./public/last_label.png", imageData, 'base64', function(err) {
+            fs.writeFile("./public/last_label.png", imageData, 'base64', function (err) {
             });
         });
         dymo.print('DYMO LabelWriter 450', labelData);
-        let date= new Date();
+        let date = new Date();
         lastLabelPrint = date.toUTCString();
         console.log("Label printed!\n")
     })
@@ -185,15 +190,15 @@ function printPartLabel(partNumber) {
 
 function printDOAWarning() {
     var fileName = "./label_doa_warning.label";
-    fs.readFile(fileName, 'utf8', function(err, data) {
+    fs.readFile(fileName, 'utf8', function (err, data) {
         if (err) throw err;
         labelData = data;
         dymo.renderLabel(labelData).then(imageData => {
-            fs.writeFile("./public/last_label.png", imageData, 'base64', function(err) {
+            fs.writeFile("./public/last_label.png", imageData, 'base64', function (err) {
             });
         });
         dymo.print('DYMO LabelWriter 450', labelData);
-        let date= new Date();
+        let date = new Date();
         lastLabelPrint = date.toUTCString();
         console.log("DOA Warning label printed!\n")
     })
@@ -201,8 +206,8 @@ function printDOAWarning() {
 }
 
 function checkServer() {
-    
-    let date= new Date();
+
+    let date = new Date();
     const currentHour = date.getUTCHours();
 
     if (currentHour >= config.helpdesk.openingHour && currentHour < config.helpdesk.closingHour) {
@@ -266,7 +271,7 @@ function checkServer() {
                     var retrivedSSubject = ticketCache.get(ticketID);
 
                     if (retrivedSSubject == undefined) {
-                        
+
                         console.log("New ticket found!");
                         console.log("Ticket ID: " + ticketID);
                         console.log("Ticket Subject: " + ticketSSubject);
@@ -279,7 +284,7 @@ function checkServer() {
                 }
             }
 
-            let date= new Date();
+            let date = new Date();
             lastServerCheck = date.toUTCString();
         });
 }
@@ -299,7 +304,7 @@ function retriveTicketAndPrint(ticketID, shouldPrintRecipt) {
     fetch(url, { method: 'GET' })
         .then(res => res.json())
         .then(json => {
-            
+
             const subject = json.subject;
             const detail = json.detail.replaceAll("<br/> ", "\n");
             const date = new Date(json.reportDateUtc);
@@ -337,14 +342,22 @@ function retriveTicketAndPrint(ticketID, shouldPrintRecipt) {
 function loadPartsCache() {
     console.log('Loading Parts DB...');
     fs.createReadStream('iPhone_Parts.csv')
-  .pipe(csv())
-  .on('data', (row) => {
-    console.log("Caching " + row['Part Number']);
-    partsCache.set(row['Part Number'], row);
-  })
-  .on('end', () => {
-    console.log('Parts DB Parsed and Cached!');
-  });
+        .pipe(csv())
+        .on('data', (row) => {
+            console.log("Caching " + row['Part Number']);
+            partsCache.set(row['Part Number'], row);
+        })
+        .on('end', () => {
+            console.log('Parts DB Parsed and Cached!');
+        });
+}
+
+function runUpdateScript() {
+    var spawn = require('child_process').spawn;
+    spawn('/bin/bash', ['update_script.sh'], {
+        stdio: 'ignore',
+        detached: true
+    }).unref();
 }
 
 loadPartsCache();
