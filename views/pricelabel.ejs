@@ -32,13 +32,17 @@
   <div class="d-flex flex-column p-2">
     <div class="p-2 align-self-center d-flex justify-content-center">
       <div class="bg-dark p-4 rounded">
-        <form action="/print/ticket" method="get">
+        <form action="/print/pricelabel" method="get">
           <div class="form-group w-100">
-            <label class="ticketNumber-label text-white" for="ticketNumber">Ticket Number</label>
-            <input type="text" name="ticketNumber" class="form-control" id="ticketNumber" placeholder="XXXXXX">
+            <label class="price-label text-white" for="price">Price (£)</label>
+            <input type="text" name="price" class="form-control" id="price" placeholder="00.00">
+          </div>
+          <div class="form-group w-100">
+            <label class="quantity-label text-white" for="quantity">Print Quantity</label>
+            <input type="text" name="quantity" class="form-control" id="quantity" placeholder="XX" value="1">
           </div>
           <br>
-          <input type="submit" class="btn btn-primary text-white" value="Print Ticket Receipt">
+          <input type="submit" class="btn btn-primary text-white" value="Print Price Label(s)">
         </form>
 
       </div>

@@ -50,6 +50,10 @@ app.get('/ui/partlabel', (req, res) => {
     res.render('partlabel');
 })
 
+app.get('/ui/pricelabel', (req, res) => {
+    res.render('pricelabel');
+})
+
 app.get('/print/ticketlabel', (req, res) => {
     retriveTicketAndPrint(req.query.ticketNumber, false, true);
     res.redirect("/ui/ticketlabel");
@@ -66,7 +70,7 @@ app.get('/print/partlabel', (req, res) => {
 })
 
 app.get('/print/pricelabel', (req, res) => {
-    printPartLabel(req.query.price, eq.query.quantity)
+    printPriceLabel(req.query.price, req.query.quantity)
     res.redirect("/ui/pricelabel");
 })
 
@@ -206,6 +210,8 @@ function printPartLabel(partNumber) {
 }
 
 function printPriceLabel(price, quantity) {
+    console.log("Price - " + price)
+    console.log("Print Quanitity - " + quantity)
     const fileName = "./label_template_price.label";
     fs.readFile(fileName, 'utf8', function (err, data) {
         if (err) throw err;
@@ -214,8 +220,7 @@ function printPriceLabel(price, quantity) {
             fs.writeFile("./public/last_label.png", imageData, 'base64', function (err) {
             });
         });
-        dymo.
-        dymo.print('DYMO LabelWriter 450', labelData);
+        dymo.print('DYMO LabelWriter 450', labelData, "", quantity);
         let date = new Date();
         lastLabelPrint = date.toUTCString();
         console.log("Label printed!\n")
