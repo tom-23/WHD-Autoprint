@@ -7,6 +7,7 @@ const NodeCache = require("node-cache");
 const ThermalPrinter = require("node-thermal-printer").printer;
 const Types = require("node-thermal-printer").types;
 const Dymo = require('dymojs')
+
 const app = express()
 const port = config.webPort
 
@@ -33,24 +34,40 @@ app.get('/', (req, res) => {
     res.render('index', { lastServerCheck, lastLabelPrint, lastSubject });
 })
 
-app.get('/print/lastLabel', (req, res) => {
-    printLabel(lastLabelPrint, lastSerialNumber, lastOpenDate);
-    res.redirect("/");
+app.get('/oldindex', (req, res) => {
+    res.render('oldindex', { lastServerCheck, lastLabelPrint, lastSubject });
 })
 
-app.get('/print/lastRecipt', (req, res) => {
-    printRecipt(lastTicketNumber, lastSubject, lastDetails, new Date());
-    res.redirect("/");
+app.get('/ui/ticketlabel', (req, res) => {
+    res.render('ticketlabel');
 })
 
-app.get('/print/ticket', (req, res) => {
-    retriveTicketAndPrint(req.query.ticketNumber, false);
-    res.redirect("/");
+app.get('/ui/ticketreceipt', (req, res) => {
+    res.render('ticketreceipt');
 })
 
-app.get('/print/part', (req, res) => {
+app.get('/ui/partlabel', (req, res) => {
+    res.render('partlabel');
+})
+
+app.get('/print/ticketlabel', (req, res) => {
+    retriveTicketAndPrint(req.query.ticketNumber, false, true);
+    res.redirect("/ui/ticketlabel");
+})
+
+app.get('/print/ticketreceipt', (req, res) => {
+    retriveTicketAndPrint(req.query.ticketNumber, true, false);
+    res.redirect("/ui/ticketreceipt");
+})
+
+app.get('/print/partlabel', (req, res) => {
     printPartLabel(req.query.partNumber)
-    res.redirect("/");
+    res.redirect("/ui/partlabel");
+})
+
+app.get('/print/pricelabel', (req, res) => {
+    printPartLabel(req.query.price, eq.query.quantity)
+    res.redirect("/ui/pricelabel");
 })
 
 app.get('/updaterestart', (req, res) => {
@@ -146,7 +163,6 @@ async function printRecipt(ticketID, subject, detail, date) {
 
 
 function printLabel(ticketID, serialNumber, openDate) {
-    serialNumber = toString(serialNumber).toUpperCase();
     var labelData = "";
     var fileName;
     if (openDate != "") {
@@ -182,6 +198,23 @@ function printPartLabel(partNumber) {
             fs.writeFile("./public/last_label.png", imageData, 'base64', function (err) {
             });
         });
+        dymo.print('DYMO LabelWriter 450', labelData);
+        let date = new Date();
+        lastLabelPrint = date.toUTCString();
+        console.log("Label printed!\n")
+    })
+}
+
+function printPriceLabel(price, quantity) {
+    const fileName = "./label_template_price.label";
+    fs.readFile(fileName, 'utf8', function (err, data) {
+        if (err) throw err;
+        labelData = data.replace("00.00", price);
+        dymo.renderLabel(labelData).then(imageData => {
+            fs.writeFile("./public/last_label.png", imageData, 'base64', function (err) {
+            });
+        });
+        dymo.
         dymo.print('DYMO LabelWriter 450', labelData);
         let date = new Date();
         lastLabelPrint = date.toUTCString();
@@ -290,7 +323,7 @@ function checkServer() {
         });
 }
 
-function retriveTicketAndPrint(ticketID, shouldPrintRecipt) {
+function retriveTicketAndPrint(ticketID, shouldPrintRecipt, shouldPrintLabel) {
     console.log("Retrieving ticket information...");
 
     var params = {
@@ -322,17 +355,26 @@ function retriveTicketAndPrint(ticketID, shouldPrintRecipt) {
                 serialNumber = "";
             }
 
+            serialNumber = serialNumber.toUpperCase();
+
             lastSubject = subject;
             lastSerialNumber = serialNumber;
             lastDetails = detail;
             lastTicketNumber = ticketID;
 
-            if (subject.startsWith("DOA")) {
-                printLabel(ticketID, subject, date.toLocaleDateString("en-UK"));
-                shouldPrintRecipt = false;
-            } else {
-                printLabel(ticketID, serialNumber, "");
+            console.log("Retrieved info!")
+            console.log("Serial Number:" + serialNumber)
+
+            if (shouldPrintLabel) {
+                if (subject.startsWith("DOA")) {
+                    printLabel(ticketID, subject, date.toLocaleDateString("en-UK"));
+                    shouldPrintRecipt = false;
+                } else {
+                    printLabel(ticketID, serialNumber, "");
+                }
             }
+
+
 
             if (!subject.startsWith("DOA") && subject.includes("DOA")) {
                 printDOAWarning();
