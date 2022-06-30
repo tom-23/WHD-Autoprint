@@ -328,7 +328,7 @@ function checkServer() {
         });
 }
 
-function retriveTicketAndPrint(ticketID, shouldPrintRecipt, shouldPrintLabel) {
+function retriveTicketAndPrint(ticketID, shouldPrintRecipt=true, shouldPrintLabel=true) {
     console.log("Retrieving ticket information...");
 
     var params = {
