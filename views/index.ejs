@@ -2,40 +2,41 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-    <title>WHD AutoPrint</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+  <title>WHD AutoPrint</title>
 </head>
 
 <body onLoad="document.getElementById('partNumber').focus()" class="bg-dark">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-gradient" style="-webkit-app-region: drag;">
-        <div class="container-fluid">
-            <ul class="navbar-nav d-flex flex-row-reverse w-100">
-              <li class="nav-item me-3">
-                <a class="nav-link" href="/ui/ticketlabel">Ticket Label</a>
-              </li>
-              <li class="nav-item me-3">
-                <a class="nav-link" href="/ui/ticketreceipt">Ticket Receipt</a>
-              </li>
-              <li class="nav-item me-3">
-                <a class="nav-link" href="/ui/partlabel">Part Label</a>
-              </li>
-              <li class="nav-item me-3">
-                <a class="nav-link" href="/ui/pricelabel">Price Label</a>
-              </li>
-            </ul>
-        </div>
-      </nav>
-    <div class="d-flex flex-column p-2">
-        <div class="p-2 align-self-center d-flex justify-content-center">
-            <div class="bg-dark p-4 rounded">
-               <h1 class="text-white">AutoPrint</h1>
-               <p class="text-white">Select a printing mode from above.</p>
-            </div>
-        </div>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark bg-gradient" style="-webkit-app-region: drag;">
+    <div class="container-fluid">
+      <ul class="navbar-nav d-flex flex-row-reverse w-100">
+        <li class="nav-item">
+          <a class="nav-link p-0" href="/ui/ticketlabel">Ticket Label</a>
+        </li>
+        <li class="nav-item me-3">
+          <a class="nav-link p-0" href="/ui/ticketreceipt">Ticket Receipt</a>
+        </li>
+        <li class="nav-item me-3">
+          <a class="nav-link p-0" href="/ui/partlabel">Part Label</a>
+        </li>
+        <li class="nav-item me-3">
+          <a class="nav-link p-0" href="/ui/pricelabel">Price Label</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="d-flex flex-column p-2">
+    <div class="p-2 align-self-center d-flex justify-content-center">
+      <div class="bg-dark p-4 rounded">
+        <h1 class="text-white">AutoPrint</h1>
+        <p class="text-white">Select a printing mode from above.</p>
+      </div>
+    </div>
 </body>
 
 </html>
