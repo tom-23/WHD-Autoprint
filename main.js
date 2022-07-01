@@ -83,8 +83,12 @@ app.get('/updaterestart', (req, res) => {
 
 app.listen(port, '0.0.0.0', () => {
     console.log(`WHD-Autoprint app listening on port ${port}`)
-    checkServer();
-    setInterval(checkServer, checkingInterval * 1000)
+    loadPartsCache(function () {
+        loadRecpiptFooter();
+        checkServer();
+        setInterval(checkServer, checkingInterval * 1000)
+    });
+
 })
 
 
@@ -336,7 +340,7 @@ function checkServer() {
         });
 }
 
-function retriveTicketAndPrint(ticketID, shouldPrintRecipt=true, shouldPrintLabel=true) {
+function retriveTicketAndPrint(ticketID, shouldPrintRecipt = true, shouldPrintLabel = true) {
     console.log("Retrieving ticket information...");
 
     var params = {
@@ -399,7 +403,7 @@ function retriveTicketAndPrint(ticketID, shouldPrintRecipt=true, shouldPrintLabe
         });
 }
 
-function loadPartsCache() {
+function loadPartsCache(callback) {
     console.log('Loading Parts DB...');
     const filename = 'iPhone_Parts.csv';
     const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
@@ -413,13 +417,15 @@ function loadPartsCache() {
     bar1.start(stat.size, 0);
 
 
-    str.on('progress', function(progress) {
+    str.on('progress', function (progress) {
         bar1.update(progress.transferred);
 
         if (progress.remaining == 0) {
             bar1.stop();
+            console.log('Parts DB Parsed and Cached!');
+            callback();
         }
-     
+
         /*
         {
             percentage: 9.05,
@@ -439,9 +445,6 @@ function loadPartsCache() {
         .pipe(csv())
         .on('data', (row) => {
             partsCache.set(row['Part Number'], row);
-        })
-        .on('end', () => {
-            console.log('Parts DB Parsed and Cached!');
         });
 }
 
@@ -452,7 +455,3 @@ function runUpdateScript() {
         detached: true
     }).unref();
 }
-
-loadPartsCache();
-
-loadRecpiptFooter();
