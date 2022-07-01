@@ -7,6 +7,8 @@ const NodeCache = require("node-cache");
 const ThermalPrinter = require("node-thermal-printer").printer;
 const Types = require("node-thermal-printer").types;
 const Dymo = require('dymojs')
+const cliProgress = require('cli-progress');
+var progress = require('progress-stream');
 
 const app = express()
 const port = config.webPort
@@ -399,10 +401,43 @@ function retriveTicketAndPrint(ticketID, shouldPrintRecipt=true, shouldPrintLabe
 
 function loadPartsCache() {
     console.log('Loading Parts DB...');
-    fs.createReadStream('iPhone_Parts.csv')
+    const filename = 'iPhone_Parts.csv';
+    const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+
+    var stat = fs.statSync(filename);
+    var str = progress({
+        length: stat.size,
+        time: 100 /* ms */
+    });
+
+    bar1.start(stat.size, 0);
+
+
+    str.on('progress', function(progress) {
+        bar1.update(progress.transferred);
+
+        if (progress.remaining == 0) {
+            bar1.stop();
+        }
+     
+        /*
+        {
+            percentage: 9.05,
+            transferred: 949624,
+            length: 10485760,
+            remaining: 9536136,
+            eta: 42,
+            runtime: 3,
+            delta: 295396,
+            speed: 949624
+        }
+        */
+    });
+
+    fs.createReadStream(filename)
+        .pipe(str)
         .pipe(csv())
         .on('data', (row) => {
-            console.log("Caching " + row['Part Number']);
             partsCache.set(row['Part Number'], row);
         })
         .on('end', () => {
